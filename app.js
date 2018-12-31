@@ -5,6 +5,7 @@ import colors from 'colors';
 import dotenv from 'dotenv';
 import sgMail from '@sendgrid/mail';
 import express from 'express';
+import bodyParser from 'body-parser';
 
 import apis from './apis';
 const current = apis.reduce((acc, item) => {
@@ -122,6 +123,11 @@ startupMessage();
 console.log('App started');
 
 const app = express();
+app.use(bodyParser.json({ limit: '50mb'}));
+
+app.get('/', (req, res) => {
+  res.send({ status: 'ok', uptime: process.uptime() });
+});
 
 app.listen(process.env.PORT || 5000, () => {
   console.log(`Listening on port ${process.env.PORT}`);
