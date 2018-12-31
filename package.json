@@ -1,0 +1,24 @@
+{
+  "name": "cf-status",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "babel-node app.js",
+    "prestart": "npm install"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "@sendgrid/mail": "^6.3.1",
+    "axios": "^0.18.0",
+    "colors": "^1.3.3",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "log-symbols": "^2.2.0",
+    "moment": "^2.23.0"
+  }
+}
