@@ -40,7 +40,6 @@ const getStatus = (name, id, url) => {
       if(current[id].active) {
         const d = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
         const date = colors.cyan(d);
-        console.log(date, name, error.response.status);
         //sendMail(name, error.response.status);
         //sendSlackMessage(name, error.response.status);
         if(current[id].lastChange + ( process.env.TIMEOUT * 1) < Date.now()) {
@@ -64,7 +63,7 @@ setInterval(() => {
 
   Promise.all(promises)
     .then((results) => {
-      //formatOutput(results);
+      formatOutput(results);
     }).catch((error) => {
       console.log(error);
     });
@@ -131,7 +130,7 @@ function startupMessage() {
   };
   axios(options);
 }
-startupMessage();
+//startupMessage();
 
 
 console.log('App started');
