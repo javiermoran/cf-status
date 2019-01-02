@@ -8,8 +8,9 @@ import express from 'express';
 import bodyParser from 'body-parser';
 
 import apis from './apis';
+
 const current = apis.reduce((acc, item) => {
-  acc[item.id] = true;
+  acc[item.id] = { active: true, lastChange: 0 };
   return acc;
 }, {});
 
@@ -19,29 +20,42 @@ const getStatus = (name, id, url) => {
   return new Promise((resolve, reject) => {
     axios.get(url).then((response) => {
       if(response.status === 200) {
-        current[id] = true;
+        current[id].active = true;
         resolve({ name, status: 200 });
       } else {
         resolve({ name, status: response.status });
       }
     }).catch((error) => {
-      if(error.response.status === 423) {
+      if(error.response) {
+        if(error.response.status === 423) {
+          return resolve({ name, status: 423});
+        }
+      } else {
         return resolve({ name, status: 423});
       }
+      
 
       resolve({ name, status: error.response.status });
 
-      if(current[id]) {
-        sendMail(name, error.response.status);
-        sendSlackMessage(name, error.response.status);
-        current[id] = false;
+      if(current[id].active) {
+        const d = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
+        const date = colors.cyan(d);
+        console.log(date, name, error.response.status);
+        //sendMail(name, error.response.status);
+        //sendSlackMessage(name, error.response.status);
+        if(current[id].lastChange + ( process.env.TIMEOUT * 1) < Date.now()) {
+          sendSlackMessage(name, error.response.status);
+          current[id].active = false;
+          current[id].lastChange = Date.now() * 1;
+        }
       }
     });
   });
 }
 
 setInterval(() => {
-  axios.get('https://cf-status-check.herokuapp.com');
+  axios.get('https://cf-status-check.herokuapp.com')
+    .catch(() => {});
 
   const promises = [];
   apis.map((api) => {
@@ -49,11 +63,11 @@ setInterval(() => {
   });
 
   Promise.all(promises)
-  .then((results) => {
-    //formatOutput(results);
-  }).catch((error) => {
-    console.log(error);
-  })
+    .then((results) => {
+      //formatOutput(results);
+    }).catch((error) => {
+      console.log(error);
+    });
 }, process.env.INTERVAL_TIME);
 
 function formatOutput(results) {

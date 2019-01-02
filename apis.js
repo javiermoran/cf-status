@@ -11,10 +11,10 @@ const babaggeStg = { url: `${stgBasePath}/api//babbage/latest/status`, name: 'Ba
 const vorStg = { url: `${stgBasePath}/api/vor/router/latest/version`, name: 'Vor staging', id: 'vorStg' };
 
 const devBasePath = 'http://devmxcfdi.corpfolder.com';
-const coreDev = { url: `${devBasePath}/api/latest/version`, name: 'Core dev', id: 'coreStg' };
-const fakDev = { url: `${devBasePath}/api/facturacion/latest/version`, name: 'Facturacion dev', id: 'fakStg' };
-const babaggeDev = { url: `${devBasePath}/api//babbage/latest/status`, name: 'Babagge dev', id: 'babaggeStg' };
-const vorDev = { url: `${devBasePath}/api/vor/router/latest/version`, name: 'Vor dev', id: 'vorStg' };
+const coreDev = { url: `${devBasePath}/api/latest/version`, name: 'Core dev', id: 'coreDev' };
+const fakDev = { url: `${devBasePath}/api/facturacion/latest/version`, name: 'Facturacion dev', id: 'fakDev' };
+const babaggeDev = { url: `${devBasePath}/api//babbage/latest/status`, name: 'Babagge dev', id: 'babaggeDev' };
+const vorDev = { url: `${devBasePath}/api/vor/router/latest/version`, name: 'Vor dev', id: 'vorDev' };
 
 export default [ 
   core, fak, vor, babagge, 
