@@ -40,9 +40,10 @@ const getStatus = (name, id, url) => {
       if(current[id].active) {
         const d = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
         const date = colors.cyan(d);
-        //sendMail(name, error.response.status);
+        //
         //sendSlackMessage(name, error.response.status);
-        if(current[id].lastChange + ( process.env.TIMEOUT * 1) < Date.now()) {
+        if(current[id].lastChange + ( process.env.TIMEOUT * 1) < Date.now()) {          
+          sendMail(name, error.response.status);
           sendSlackMessage(name, error.response.status);
           current[id].active = false;
           current[id].lastChange = Date.now() * 1;
@@ -82,17 +83,20 @@ function formatOutput(results) {
 }
 
 function sendMail(name, status) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  const msg = {
-    to: 'jmoran@nearbpo.com',
-    from: { email: 'jmoran@corpfolder.com', name: 'Corpfolder status notifier' },
-    subject: `${name} down.`,
-    text: `Problema en ${name} detectado`,
-    html: `Problema en ${name} detectado - API ${name} respondió con status ${status}`,
-  };
-  sgMail.send(msg);
-}
+  if(name.indexOf('prod') !== -1) {
+    const to = process.env.EMAILS.split('|');
 
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const msg = {
+      to,
+      from: { email: 'jmoran@corpfolder.com', name: 'Corpfolder status notifier' },
+      subject: `${name} down.`,
+      text: `Problema en ${name} detectado`,
+      html: `Problema en ${name} detectado - API ${name} respondió con status ${status}`,
+    };
+    sgMail.send(msg);
+  }
+}
 
 function sendSlackMessage(name, status) {
   const url = 'https://slack.com/api/chat.postMessage';
